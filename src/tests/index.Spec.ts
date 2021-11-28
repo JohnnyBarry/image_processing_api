@@ -5,7 +5,7 @@ const request = supertest(app);
 
 describe('Test Endpoint Resource', () => {
   it('gets the api/images endpoint', async (done) => {
-    const response = await request.get('/api/images?filename=test');
+    const response = await request.get('/api/images?filename=fjord');
     expect(response.status).toBe(200);
     done();
   });
