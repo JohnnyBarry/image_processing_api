@@ -4,29 +4,29 @@ import app from '../index';
 const request = supertest(app);
 
 describe('Test Endpoint Resource', () => {
-  it('gets the api/images endpoint', async (done) => {
+  it('Gets the api/images endpoint', async (done) => {
     const response = await request.get('/api/images?filename=fjord');
     expect(response.status).toBe(200);
     done();
   });
 
-  it('filename parameter is required', async () => {
+  it('Filename Parameter Is Required', async () => {
     const response = await request.get('/api/images');
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('filename is required!');
   });
 
-  it('gets the api/images endpoint', async () => {
-    const response = await request.get('/api/images?filename=test&width=123k');
+  it('Width Must Be A Number.', async () => {
+    const response = await request.get('/api/images?filename=test&width=123k&height=200');
     expect(response.status).toBe(400);
-    expect(response.body.error).toBe('width must be a number!');
+    expect(response.body.error).toBe('Width Must Be A Number!');
   });
 
-  it('gets the api/images endpoint', async () => {
+  it('Height Must Be A Number.', async () => {
     const response = await request.get(
       '/api/images?filename=test&width=200&height=200t'
     );
     expect(response.status).toBe(400);
-    expect(response.body.error).toBe('height must be a number!');
+    expect(response.body.error).toBe('Height Must Be A Number!');
   });
 });
