@@ -7,12 +7,16 @@ describe('File Utility Tests', () => {
   describe('writeData Tests', () => {
     it('WriteData returns a resolved promise', async () => {
       const filePath = path.join(__tests_dirname, 'writeData.txt');
-      await expectAsync(FileUtility.writeData(filePath, 'Testing')).toBeResolved();
+      await expectAsync(
+        FileUtility.writeData(filePath, 'Testing')
+      ).toBeResolved();
     });
 
     it('WriteData returns a rejected promise', async () => {
       const filePath = path.join(__tests_dirname, 'reject', 'writeData.txt');
-      await expectAsync(FileUtility.writeData(filePath, 'Testing')).toBeRejected();
+      await expectAsync(
+        FileUtility.writeData(filePath, 'Testing')
+      ).toBeRejected();
     });
   });
 
@@ -26,5 +30,5 @@ describe('File Utility Tests', () => {
       const filePath = path.join(__images_dirname, 'test', 'test.jpg');
       await expectAsync(FileUtility.hasReadAccess(filePath)).toBeRejected();
     });
-  });  
+  });
 });

@@ -5,19 +5,26 @@ const __images_dirname = path.join(path.resolve(), '/assets/images/');
 describe('Image Utility Tests', () => {
   describe('Resize Image Tests', () => {
     it('Resizing a valid image file returns a buffer of length > 0', async () => {
-      const validImgFilePath = path.join(__images_dirname, 'fjord', 'fjord.jpg');
+      const validImgFilePath = path.join(
+        __images_dirname,
+        'fjord',
+        'fjord.jpg'
+      );
 
-      imageUtility
-        .resize(validImgFilePath, 300, 300)
-        .then((buffer) => {
-          expect(buffer.length).toBeGreaterThan(0);
-        });
+      imageUtility.resize(validImgFilePath, 300, 300).then((buffer) => {
+        expect(buffer.length).toBeGreaterThan(0);
+      });
     });
 
     it('Resizing an invalid image file returns a rejected promise with error "Input file is missing"', async () => {
-      const invalidImgFilePath = path.join(__images_dirname, 'fjord', 'fjord_test.jpg');
-      await expectAsync(imageUtility
-        .resize(invalidImgFilePath, 300, 300)).toBeRejectedWithError('Input file is missing');
+      const invalidImgFilePath = path.join(
+        __images_dirname,
+        'fjord',
+        'fjord_test.jpg'
+      );
+      await expectAsync(
+        imageUtility.resize(invalidImgFilePath, 300, 300)
+      ).toBeRejectedWithError('Input file is missing');
     });
   });
 });

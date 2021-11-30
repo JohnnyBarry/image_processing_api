@@ -9,7 +9,7 @@ const __images_dirname = path.join(path.resolve(), '/assets/images/');
 const __image_format = '.jpg';
 
 /**
- * @description: Api endpoint 'images/' Request handler. 
+ * @description: Api endpoint 'images/' Request handler.
  * It will return the original image if only the filename parameter is passed in and the file is available.
  * If width and height parmeters are also passed in,
  * It first checks if the file exists in cache. If so, it'll be returned in the response.
@@ -27,13 +27,19 @@ images.get(
 
     if (filename) {
       const rootPath = path.join(__images_dirname, filename);
-      const origImgFilePath = path.join(rootPath, `${filename}${__image_format}`);
+      const origImgFilePath = path.join(
+        rootPath,
+        `${filename}${__image_format}`
+      );
       fileUtility
         .hasReadAccess(origImgFilePath)
         .then(() => {
           if (width && height) {
             const processedImgFileName = `${filename}_${width}W_${height}H${__image_format}`;
-            const processedImgFilePath = path.join(rootPath, processedImgFileName);
+            const processedImgFilePath = path.join(
+              rootPath,
+              processedImgFileName
+            );
 
             fileUtility
               .hasReadAccess(processedImgFilePath)
@@ -49,17 +55,15 @@ images.get(
                   }
                 });
               })
-              .catch((err: Error) => {
+              .catch(() => {
                 imageUtility
                   .resize(origImgFilePath, parseInt(width), parseInt(height))
                   .then((buffer) => {
                     res.type(`image/jpeg`);
                     res.send(buffer);
-                    fileUtility
-                      .writeData(processedImgFilePath, buffer)
-                      .then(() => {});
+                    fileUtility.writeData(processedImgFilePath, buffer);
                   })
-                  .catch((err) => {
+                  .catch(() => {
                     res.status(500).send({ error: 'Error Resizing Image!' });
                   });
               });
@@ -67,16 +71,20 @@ images.get(
             const options = {
               root: rootPath
             };
-            res.sendFile(`${filename}${__image_format}`, options, (err: Error) => {
-              if (err) {
-                res
-                  .status(404)
-                  .send({ error: 'Full Image Could Not Be Sent!' });
+            res.sendFile(
+              `${filename}${__image_format}`,
+              options,
+              (err: Error) => {
+                if (err) {
+                  res
+                    .status(404)
+                    .send({ error: 'Full Image Could Not Be Sent!' });
+                }
               }
-            });
+            );
           }
         })
-        .catch((err: Error) => {
+        .catch(() => {
           res.status(404).send({ error: 'Full Image Not Found!' });
         });
     }
