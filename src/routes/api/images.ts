@@ -1,54 +1,25 @@
 import express from 'express';
 import path from 'path';
-import { RequestHandler } from 'express';
-import validateUtility from '../../utilities/validate';
+import imagesMiddleware from '../middleware/images';
 import imageUtility from '../../utilities/image';
 import fileUtility from '../../utilities/file';
 
 const images = express.Router();
 const __images_dirname = path.join(path.resolve(), '/assets/images/');
+const __image_format = '.jpg';
 
-// middleware function
-const validateParams: RequestHandler = (req, res, next): void => {
-  const filename = req.query.filename as string;
-  const width = req.query.width as string;
-  const height = req.query.height as string;
-
-  if (!filename) {
-    res.status(400).send({ error: 'filename is required!' });
-    return;
-  }
-
-  if (width && !height) {
-    res
-      .status(400)
-      .send({ error: 'Height Param Must Be Passed When Using Width' });
-    return;
-  }
-
-  if (height && !width) {
-    res
-      .status(400)
-      .send({ error: 'Width Param Must Be Passed When Using Height' });
-    return;
-  }
-
-  if (width && !validateUtility.isNumeric(width)) {
-    res.status(400).send({ error: 'Width Must Be A Number!' });
-    return;
-  }
-
-  if (height && !validateUtility.isNumeric(height)) {
-    res.status(400).send({ error: 'Height Must Be A Number!' });
-    return;
-  }
-
-  next();
-};
+/**
+ * @description: Api endpoint 'images/' Request handler. 
+ * It will return the original image if only the filename parameter is passed in and the file is available.
+ * If width and height parmeters are also passed in,
+ * It first checks if the file exists in cache. If so, it'll be returned in the response.
+ * If it's not in cache it's resized and sent back in the response. The file is stored in cache for future use.
+ *
+ */
 
 images.get(
   '/',
-  validateParams,
+  imagesMiddleware.validateParams,
   (req: express.Request, res: express.Response) => {
     const filename = req.query.filename as string;
     const width = req.query.width as string;
@@ -56,21 +27,21 @@ images.get(
 
     if (filename) {
       const rootPath = path.join(__images_dirname, filename);
-      const fullFilePath = path.join(rootPath, `${filename}.jpg`);
+      const origImgFilePath = path.join(rootPath, `${filename}${__image_format}`);
       fileUtility
-        .hasReadAccess(fullFilePath)
+        .hasReadAccess(origImgFilePath)
         .then(() => {
           if (width && height) {
-            const processedFileName = `${filename}_${width}W_${height}H.jpg`;
-            const processedFilePath = path.join(rootPath, processedFileName);
+            const processedImgFileName = `${filename}_${width}W_${height}H${__image_format}`;
+            const processedImgFilePath = path.join(rootPath, processedImgFileName);
 
             fileUtility
-              .hasReadAccess(processedFilePath)
+              .hasReadAccess(processedImgFilePath)
               .then(() => {
                 const options = {
                   root: rootPath
                 };
-                res.sendFile(processedFileName, options, (err: Error) => {
+                res.sendFile(processedImgFileName, options, (err: Error) => {
                   if (err) {
                     res
                       .status(404)
@@ -80,13 +51,12 @@ images.get(
               })
               .catch((err: Error) => {
                 imageUtility
-                  .resize(fullFilePath, parseInt(width), parseInt(height))
+                  .resize(origImgFilePath, parseInt(width), parseInt(height))
                   .then((buffer) => {
                     res.type(`image/jpeg`);
                     res.send(buffer);
-                    // Save the file for future.
                     fileUtility
-                      .writeData(processedFilePath, buffer)
+                      .writeData(processedImgFilePath, buffer)
                       .then(() => {});
                   })
                   .catch((err) => {
@@ -97,7 +67,7 @@ images.get(
             const options = {
               root: rootPath
             };
-            res.sendFile(`${filename}.jpg`, options, (err: Error) => {
+            res.sendFile(`${filename}${__image_format}`, options, (err: Error) => {
               if (err) {
                 res
                   .status(404)
@@ -107,7 +77,6 @@ images.get(
           }
         })
         .catch((err: Error) => {
-          console.log(err);          
           res.status(404).send({ error: 'Full Image Not Found!' });
         });
     }

@@ -17,7 +17,9 @@ describe('Test Endpoint Resource', () => {
   });
 
   it('Width Must Be A Number.', async () => {
-    const response = await request.get('/api/images?filename=test&width=123k&height=200');
+    const response = await request.get(
+      '/api/images?filename=test&width=123k&height=200'
+    );
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('Width Must Be A Number!');
   });
