@@ -14,21 +14,21 @@ const validateParams: RequestHandler = (req, res, next): void => {
   const height = req.query.height as string;
 
   if (!filename) {
-    res.status(400).send({ error: 'filename is required!' });
+    res.status(400).send({ error: 'filename param is required!' });
     return;
   }
 
   if (width && !height) {
     res
       .status(400)
-      .send({ error: 'Height Param Must Be Passed When Using Width' });
+      .send({ error: 'Height Param Must Be Passed When Using Width!' });
     return;
   }
 
   if (height && !width) {
     res
       .status(400)
-      .send({ error: 'Width Param Must Be Passed When Using Height' });
+      .send({ error: 'Width Param Must Be Passed When Using Height!' });
     return;
   }
 
