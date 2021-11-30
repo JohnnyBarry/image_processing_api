@@ -9,7 +9,8 @@ The current list of images include 'fjord', 'icelandwaterfall', 'palmtunnel', 's
 2. Navigate to the image_processing_api directory.
 3. Run: npm install
 4. To Run the Test suite use command: **npm run test**
-5. To Run the Server use command: **npm run serve**
+5. To Build the Source code use command: **npm run build**
+6. To Run the Server use command: **npm run serve**
 
 The Api URL will be http://localhost:3000/api/images/
 
