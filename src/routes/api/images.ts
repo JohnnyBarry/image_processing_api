@@ -5,7 +5,11 @@ import imageUtility from '../../utilities/image';
 import fileUtility from '../../utilities/file';
 
 const images = express.Router();
-const __images_dirname = path.join(path.resolve(), '/assets/images/');
+const __full_images_dirname = path.join(path.resolve(), '/assets/images/full/');
+const __thumb_images_dirname = path.join(
+  path.resolve(),
+  '/assets/images/thumbnail/'
+);
 const __image_format = '.jpg';
 
 /**
@@ -24,20 +28,18 @@ images.get(
     const filename = req.query.filename as string;
     const width = req.query.width as string;
     const height = req.query.height as string;
-
     if (filename) {
-      const rootPath = path.join(__images_dirname, filename);
-      const origImgFilePath = path.join(
-        rootPath,
+      const fullImgFilePath = path.join(
+        __full_images_dirname,
         `${filename}${__image_format}`
       );
       fileUtility
-        .hasReadAccess(origImgFilePath)
+        .hasReadAccess(fullImgFilePath)
         .then(() => {
           if (width && height) {
             const processedImgFileName = `${filename}_${width}W_${height}H${__image_format}`;
             const processedImgFilePath = path.join(
-              rootPath,
+              __thumb_images_dirname,
               processedImgFileName
             );
 
@@ -45,7 +47,7 @@ images.get(
               .hasReadAccess(processedImgFilePath)
               .then(() => {
                 const options = {
-                  root: rootPath
+                  root: __thumb_images_dirname
                 };
                 res.sendFile(processedImgFileName, options, (err: Error) => {
                   if (err) {
@@ -57,7 +59,7 @@ images.get(
               })
               .catch(() => {
                 imageUtility
-                  .resize(origImgFilePath, parseInt(width), parseInt(height))
+                  .resize(fullImgFilePath, parseInt(width), parseInt(height))
                   .then((buffer) => {
                     res.type(`image/jpeg`);
                     res.send(buffer);
@@ -69,7 +71,7 @@ images.get(
               });
           } else {
             const options = {
-              root: rootPath
+              root: __full_images_dirname
             };
             res.sendFile(
               `${filename}${__image_format}`,

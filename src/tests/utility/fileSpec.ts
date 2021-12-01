@@ -1,6 +1,6 @@
 import FileUtility from '../../utilities/file';
 import path from 'path';
-const __images_dirname = path.join(path.resolve(), '/assets/images/');
+const __full_images_dirname = path.join(path.resolve(), '/assets/images/full/');
 const __tests_dirname = path.join(path.resolve(), '/test_data/fileSpec/');
 
 describe('File Utility Tests', () => {
@@ -21,13 +21,13 @@ describe('File Utility Tests', () => {
   });
 
   describe('hasReadAccess Tests', () => {
-    it('Have Read Access To Image File fjord/fjord.jpg', async () => {
-      const filePath = path.join(__images_dirname, 'fjord', 'fjord.jpg');
+    it('Have Read Access To Image File fjord.jpg', async () => {
+      const filePath = path.join(__full_images_dirname, 'fjord.jpg');
       await expectAsync(FileUtility.hasReadAccess(filePath)).toBeResolved();
     });
 
     it("Don't Have Read Access To Image File test/test.jpg", async () => {
-      const filePath = path.join(__images_dirname, 'test', 'test.jpg');
+      const filePath = path.join(__full_images_dirname, 'test.jpg');
       await expectAsync(FileUtility.hasReadAccess(filePath)).toBeRejected();
     });
   });
