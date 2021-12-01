@@ -19,3 +19,8 @@ The following URL Parameters are accepted
 1. **filename** : This is the name of the image file you wish to receive. (See list above for valid images.) This is a required parameter.
 2. **width** : This is the image width you require.
 3. **height** : This is the image height you require.
+
+**Example URI **
+http://localhost:3000/api/images/?filename=fjord&width=500&height=500
+
+The above should return back the fjord image that has a width of 500px and a height of 500px
