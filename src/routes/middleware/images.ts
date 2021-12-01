@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import { RequestHandler, NextFunction, Request, Response } from 'express';
 import validateUtility from '../../utilities/validate';
 
 /**
@@ -8,7 +8,7 @@ import validateUtility from '../../utilities/validate';
  * @param: res: Express Response object
  * @param: next: Function called to pass control to the next middleware or the request handler.
  */
-const validateParams: RequestHandler = (req, res, next): void => {
+const validateParams: RequestHandler = (req: Request, res: Response, next: NextFunction): void => {
   const filename = req.query.filename as string;
   const width = req.query.width as string;
   const height = req.query.height as string;

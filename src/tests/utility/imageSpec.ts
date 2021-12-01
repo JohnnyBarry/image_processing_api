@@ -1,18 +1,19 @@
 import imageUtility from '../../utilities/image';
 import path from 'path';
-const __images_dirname = path.join(path.resolve(), '/assets/images/');
+const __images_dirname = path.join(path.resolve(), '/assets/images/full');
 
 describe('Image Utility Tests', () => {
   describe('Resize Image Tests', () => {
     it('Resizing a valid image file returns a buffer of length > 0', async () => {
       const validImgFilePath = path.join(
         __images_dirname,
-        'fjord',
         'fjord.jpg'
       );
 
-      imageUtility.resize(validImgFilePath, 300, 300).then((buffer) => {
+      imageUtility.resize(validImgFilePath, 300, 300).then((buffer) => {      
         expect(buffer.length).toBeGreaterThan(0);
+      }).catch((err) => {
+        fail(err);
       });
     });
 
