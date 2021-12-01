@@ -4,10 +4,9 @@ import app from '../index';
 const request = supertest(app);
 
 describe('Test Endpoint Resource', () => {
-  it('Gets the api/images endpoint', async (done) => {
+  it('Gets the api/images endpoint', async () => {
     const response = await request.get('/api/images?filename=fjord');
     expect(response.status).toBe(200);
-    done();
   });
 
   it('Filename Parameter Is Required', async () => {
